@@ -1,0 +1,64 @@
+verify_fourbody.py  tier=fast  groups=F1,F2,F3,F4,F5,F6,F7,F8
+
+F1  coefficient flow / parabola / invariant vs integration (Thm 2.1)
+  [PASS] A(t)=A0-12t, B(t)=B0-2A0t+12t^2 along the integrated cell  max err 3.4e-12 / 3.8e-11   (expected < 1e-8)
+  [PASS] invariant I=A^2-12B conserved (relative drift)             2.8e-12   (expected < 1e-10)
+
+F2  closed form, rate identity, convexity, mean rate, film (Thm 2.2, 3.1; Prop 3.1, 3.2; Cor 3.1)
+  [PASS] closed form (2.4): q^2=(S+D)/2, y^2=(S-D)/2 vs integration max err 3.7e-12   (expected < 1e-8)
+  [PASS] rate identity (3.1): d(q^2)/dt = 6+4D/S = 2+8q^2/(q^2+y^2) max err 2.6e-12   (expected < 1e-9)
+  [PASS] convexity (Prop 3.1): d2(q^2)/dt2 = 16 I0/S^3 > 0          rel err 3.3e-05, min 1.409   (expected < 1e-4, positive)
+  [PASS] mean rate over an episode = 6 exactly (Cor 3.1)            6.000000000000   (expected 6)
+  [PASS] film formula (Prop 3.2): dA/dt=-12, dB/dt=-2A, M=M0-K0 t+12t^2 (symbolic) True   (expected True)
+
+F3  episode structure, identity swap, reference tau_dyn, sparse floor, near-axis law
+  [PASS] episode endpoints: q^2(t2)=0 and y^2(tau_dyn)=0 (Thm 3.2)  0.0e+00 / 0.0e+00   (expected 0 / 0)
+  [PASS] identity swap: y(t2)=q(tau_dyn)=I0^{1/4}                   3.408890 / 3.408890 / I0^{1/4}=3.408890   (expected equal)
+  [PASS] lifetime tau_dyn - t2 = sqrt(I0)/6                         1.9367552475   (expected 1.9367552475)
+  [PASS] reference configuration (1, 2.7588): tau_dyn = 0.4175      0.41746 (I0=135.037, D0=6.6110)   (expected 0.4175)
+  [PASS] integrated landing time vs closed form (6 digits)          0.417463   (expected 0.417463)
+  [PASS] rate sweeps 2 -> 10 over the episode (Thm 3.2(iv))         2.0000 -> 10.0000   (expected 2 -> 10)
+  [PASS] sparse floor tau_dyn >= y0^2/6 and monotone in q0 on a grid (Cor 3.2) 1520 configurations   (expected all satisfied)
+  [PASS] two-body limit tau_dyn -> y0^2/2 as q0 -> inf              0.500000000   (expected 0.5)
+  [PASS] near-axis law y^2 = 2(tau-t)(1+O(tau-t)) (Prop 3.3)        [1.00034 1.00003 1.     ]   (expected -> 1)
+
+F4  mirror theorem: intertwinings (symbolic) and gluing (numeric) (Thm 4.1)
+  [PASS] (i) coefficients, (ii) vector fields, (iii) invariant intertwine under y -> i r True True True True   (expected all True)
+  [PASS] (iv) gluing: past the collision the chart reads J = A^2-12B = I0 J=135.036752, I0=135.036752, r^2=0.0983, q^2=12.1222   (expected J = I0, two real pairs)
+
+F5  splitting dichotomy on genuine zero pairs of Xi (Prop 5.1; Table 1)
+    closest (1977.174,1977.271): ratios [0.99998 0.99991 0.99965 0.99912]; typical (939.661,941.157): ratios [0.99874 0.9938  0.97635 0.94577]
+  [PASS] splitting ratios h/sqrt(mu/c) reproduce Table 1; opposite sign keeps zeros on the axis see above   (expected 0.99998... / 0.99874...; |Im t| ~ 0)
+
+F6  accelerated fall in the full flow (Lemma 6.1; Thm 6.1; Cor 6.1)
+  [PASS] control G_R=2.5d: ydot_real < ydot_model at every step; identity (6.1) exact 317 steps, identity err 9.0e-15   (expected all negative, < 1e-9)
+  [PASS] control G_R=2.5d: tau_real < tau_dyn=0.08179 by > 20% (canonical 0.05314) tau_real=0.05314 (35.0% shorter) [1s]   (expected ~0.0531, -31% / -35%)
+  [PASS] control G_R=2.5d: episode-comparison condition (real q^2 <= model q^2 at equal depth) min margin -0.653   (expected < 0)
+  [PASS] violating G_R=5d: ydot_real < ydot_model at every step; identity (6.1) exact 317 steps, identity err 6.3e-15   (expected all negative, < 1e-9)
+  [PASS] violating G_R=5d: tau_real < tau_dyn=0.08179 by > 20% (canonical 0.05621) tau_real=0.05621 (31.3% shorter) [0s]   (expected ~0.0562, -31% / -35%)
+  [PASS] violating G_R=5d: episode-comparison condition (real q^2 <= model q^2 at equal depth) min margin -0.558   (expected < 0)
+
+F7  lattice back-pressure (Lemma 7.1; Thm 7.1, 7.2; Prop 7.1-7.3)
+  [PASS] AP sign rule: sign Sigma_far(q) = sign(G_R - 2q - G_L) on random configurations (Thm 7.1) 300 configurations   (expected all)
+  [PASS] birth threshold: Sigma_far = 0 at G_R = 2q + G_L = 4 delta 0.00e+00   (expected 0)
+  [PASS] cumulative condition (7.3) implies Sigma_far <= 0 (Thm 7.2, sufficient) 20 qualifying lattices   (expected all <= 0)
+  [PASS] digamma law (7.4) vs lattice sums at depth 4000            max rel dev 5.1e-04   (expected < 2e-3 (paper: 0.1%))
+  [PASS] linear response -2pi^2 e/(3 delta^2) with remainder <= 8 zeta(3) e^2/delta^3 9 values of e   (expected bound holds)
+  [PASS] nonlocal linearisation (7.5) predicts exact gap rates (slope -> 1 at small amplitude) mean slope 0.9999   (expected 1 +- 0.03)
+  [PASS] linearised response (drift subtracted): the global maximum excess is non-increasing 30 random fields   (expected gap rate <= 0 at the global maximum)
+  [PASS] exact maximum principle (Prop 7.3): identity and global-maximum-gap rate <= finite-size bound 200 random lattices, max(rate - bound) = -1.51e+00   (expected identity exact; rate <= 2/M [1/(N_L+1)+1/(N_R+1)])
+  [PASS] uniform lattice attains the bound (equality case of Prop 7.3) rate 0.176035 vs 0.176035   (expected equal (N_L=50, N_R=49))
+  [PASS] single spike decays initially at rate 2C = 2pi^2/(3 delta^2) (Prop 7.2 vs 7.1) ratio 0.9756   (expected 1 (finite lattice, drift subtracted))
+
+F8  the counterexample in both readings; the exact decomposition (Thm 8.1, 8.2; Prop 8.1)
+  [PASS] viol: foot-relative decomposition (8.2) exact along the trajectory max rel err 4.2e-15   (expected < 1e-8)
+  [PASS] viol: analytic eta_ba(0) = 4 q0 Sigma_far(q0) (Thm 8.1(i)) matches the trajectory at t=0 1.4608 vs 1.4608   (expected +1.461 (violating) / -3.259 (control))
+  [PASS] violating: eta_ba > 0 throughout, band [1.215, 1.469] within 5% [1.219, 1.469]   (expected [1.215, 1.469])
+  [PASS] violating: integral +0.080, overshoot +0.103, delivered q_T 1.020 (5%) 0.080 / 0.103 / 1.0186 (model q_T=1.0895) [1s]   (expected 0.080 / 0.103 / 1.020)
+  [PASS] violating: foot-relative eta_fr < 0 throughout, band [-7.36, -4.25], integral -0.327 [-7.350, -4.249], integral -0.325   (expected [-7.36, -4.25], -0.327)
+  [PASS] violating: tau_real = 0.0562 vs tau_dyn = 0.0818           0.05621   (expected 0.0562)
+  [PASS] ctrl: foot-relative decomposition (8.2) exact along the trajectory max rel err 6.4e-15   (expected < 1e-8)
+  [PASS] ctrl: analytic eta_ba(0) = 4 q0 Sigma_far(q0) (Thm 8.1(i)) matches the trajectory at t=0 -3.2585 vs -3.2585   (expected +1.461 (violating) / -3.259 (control))
+  [PASS] control: bound holds in both readings (eta_ba <= 0, eta_fr <= 0) and q_ba^2 <= q_model^2 max eta_ba -3.258, max eta_fr -6.027   (expected <= 0 (canonical eta_ba <= -3.26))
+
+PASS=44 FAIL=0   runtime 101s

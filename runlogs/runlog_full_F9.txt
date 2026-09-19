@@ -1,0 +1,11 @@
+verify_fourbody.py  tier=full  groups=F9
+
+F9  genuine-zero checks: near-axis law (82 zeros) and the 52-zero window at t~7000 (Section 9)
+  [PASS] near-axis law on 82 genuine zeros: d(r^2)/dt slope vs -2 (paper -1.9940) -1.9929   (expected -2 +- 0.05)
+  [PASS] 52-zero window: largest gap / mean gap vs birth threshold 4 (margin ~2) 1.986   (expected < 4 (paper 1.99 vs 4))
+  [PASS] gap-relaxation: slope excl. narrowest gap vs digamma prediction (paper -19.1 vs -8.2, ratio 2.3) slope -19.10, pred -8.21, ratio 2.33   (expected ratio 2.3 +- 0.5)
+  [PASS] gap-relaxation: rank correlation (paper Spearman -0.90, Pearson -0.58) Spearman -0.90, Pearson -0.58   (expected < -0.85, < -0.5)
+  [PASS] nonlocal linearisation on the actual field: Spearman ~0.96, slope ~2 (paper) Spearman 0.962, slope 2.01   (expected > 0.93, 2.0 +- 0.4)
+  [PASS] the widest gaps close (gap rate < 0 for the 12 widest)     12/12   (expected all close)
+
+PASS=6 FAIL=0   runtime 155s
